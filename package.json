@@ -18,9 +18,14 @@
   },
   "homepage": "https://github.com/vicky-voin/odin-inventory-app#readme",
   "dependencies": {
+    "@tailwindcss/cli": "^4.1.16",
+    "autoprefixer": "^10.4.21",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.16"
   }
 }
