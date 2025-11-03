@@ -11,7 +11,24 @@ homeRouter.get("/", async (req, res) => {
     targetGenre == null
       ? await db.getAllItems()
       : await db.getItemsForCategory(targetGenre);
-  res.render("home", { items: items.map((item) => item.name) });
+
+  let categories = await db.getAllCategories();
+  categories = categories.map((category) => ({
+    ...category,
+    link: "/?genre=" + category.id,
+  }));
+
+  categories.unshift({ name: "All", link: "/" });
+
+  const selectedCategory = categories.find(
+    (category) => category.id == targetGenre
+  ).name;
+
+  res.render("home", {
+    items: items.map((item) => item.name),
+    categories: categories,
+    selectedCategory: selectedCategory,
+  });
 });
 
 module.exports = homeRouter;
