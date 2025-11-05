@@ -3,14 +3,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./output.css" rel="stylesheet" />
   </head>
-  <body class="flex gap-4">
-    <%- include('sidebar') %>
-    <div>
-      <h3 class="text-2xl font-light m-6"><%= selectedCategory %> books</h3>
-      <ul class="flex gap-4">
-        <% items.forEach((item) => { %> <%- include('itemCard', {item: item});
-        %> <% }) %>
-      </ul>
+  <body>
+    <div class="flex gap-4 min-h-screen">
+      <%- include('sidebar') %>
+      <div class="flex flex-col">
+        <h3 class="text-2xl font-light m-6"><%= selectedCategory %> books</h3>
+        <ul class="flex gap-4 flex-wrap">
+          <% items.forEach((item) => { %> <%- include('itemCard', {item: item});
+          %> <% }) %>
+        </ul>
+      </div>
     </div>
   </body>
 </html>

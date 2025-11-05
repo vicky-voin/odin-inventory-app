@@ -24,8 +24,15 @@ homeRouter.get("/", async (req, res) => {
     (category) => category.id == targetGenre
   ).name;
 
+  const authors = await db.getAuthorsForIds(
+    items.map((item) => item.author_id)
+  );
+
   res.render("home", {
-    items: items.map((item) => item.name),
+    items: items.map((item) => ({
+      ...item,
+      author: authors.find((author) => author.id === item.author_id).name,
+    })),
     categories: categories,
     selectedCategory: selectedCategory,
   });
