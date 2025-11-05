@@ -32,6 +32,7 @@ homeRouter.get("/", async (req, res) => {
     items: items.map((item) => ({
       ...item,
       author: authors.find((author) => author.id === item.author_id).name,
+      link: "/book/" + item.id,
     })),
     categories: categories,
     selectedCategory: selectedCategory,

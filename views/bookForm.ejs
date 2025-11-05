@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="m-auto mt-12 max-w-xl">
+      <form class="flex flex-col gap-4" action="<%= formUrl%>" method="POST">
+        <h1 class="text-2xl">Book Information</h1>
+        <label for="title">Title: </label>
+        <input
+          class="p-2 border border-sky-500 rounded-sm"
+          type="text"
+          id="title"
+          value="<%= bookData.title %>"
+        />
+        <label for="author">Author: </label>
+        <input
+          class="p-2 border border-sky-500 rounded-sm"
+          type="text"
+          id="author"
+          value="<%= bookData.author %>"
+        />
+        <button
+          class="text-center text-white bg-sky-500 p-2 rounded-sm hover:bg-sky-600"
+          type="submit"
+        >
+          Update
+        </button>
+      </form>
+      <br />
+      <button
+        class="text-center text-white bg-gray-500 p-2 rounded-sm hover:bg-sky-600"
+        onclick="history.back()"
+      >
+        Back
+      </button>
+    </div>
+  </body>
+</html>

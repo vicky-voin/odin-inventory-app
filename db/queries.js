@@ -5,6 +5,11 @@ async function getAllItems() {
   return rows;
 }
 
+async function getItemWithId(id) {
+  const { rows } = await pool.query(`SELECT * FROM books WHERE id = $1`, [id]);
+  return rows[0];
+}
+
 async function getAllCategories() {
   const { rows } = await pool.query("SELECT * FROM genres");
   return rows;
@@ -27,6 +32,7 @@ async function getAuthorsForIds(ids) {
 
 module.exports = {
   getAllItems,
+  getItemWithId,
   getItemsForCategory,
   getAllCategories,
   getAuthorsForIds,
