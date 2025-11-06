@@ -1,7 +1,20 @@
 const { Router } = require("express");
 const db = require("../db/queries");
+const { body, validationResult, matchedData } = require("express-validator");
 
 const bookRouter = Router();
+
+const validateBook = [
+  body("title")
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage("Book title must be between 1 and 255 characters long"),
+  body("author")
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage("Book author must be between 1 and 255 characters long"),
+  body("genre").trim(),
+];
 
 bookRouter.get("/:bookId", async (req, res) => {
   const { bookId } = req.params;
@@ -23,8 +36,26 @@ bookRouter.get("/:bookId", async (req, res) => {
   });
 });
 
-bookRouter.post("/:bookId", async (req, res) => {
-  res.send("Book updated!");
-});
+bookRouter.post("/:bookId", [
+  validateBook,
+  async (req, res) => {
+    const allGenres = await db.getAllCategories();
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("bookForm", {
+        formUrl: req.baseUrl + req.url,
+        bookData: matchedData(req),
+        genres: allGenres,
+        errors: errors.array(),
+      });
+    }
+
+    console.log(req.body);
+
+    //TODO: redirect to / instead
+    res.send("Book updated!");
+  },
+]);
 
 module.exports = bookRouter;
