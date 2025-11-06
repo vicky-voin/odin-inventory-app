@@ -10,6 +10,17 @@ async function getItemWithId(id) {
   return rows[0];
 }
 
+async function updateItem(data) {
+  const result = await pool.query(
+    `UPDATE books SET title = $1, author_id = $2, genre_id = $3 WHERE id = $4;`,
+    [data.title, data.author_id, data.genre_id, data.id]
+  );
+
+  console.log(`Updated item with id: ${data.id}`);
+
+  return result;
+}
+
 async function getAllCategories() {
   const { rows } = await pool.query("SELECT * FROM genres");
   return rows;
@@ -30,10 +41,31 @@ async function getAuthorsForIds(ids) {
   return rows;
 }
 
+async function getAuthorForName(name) {
+  const { rows } = await pool.query(`SELECT * FROM authors WHERE name = $1`, [
+    name,
+  ]);
+  return rows;
+}
+
+async function createAuthor(authorName) {
+  const result = await pool.query(
+    "INSERT INTO authors (name) VALUES ($1) RETURNING *",
+    [authorName]
+  );
+
+  console.log(`Added new author: ${authorName}`);
+
+  return result.rows[0];
+}
+
 module.exports = {
   getAllItems,
   getItemWithId,
   getItemsForCategory,
+  updateItem,
   getAllCategories,
   getAuthorsForIds,
+  getAuthorForName,
+  createAuthor,
 };

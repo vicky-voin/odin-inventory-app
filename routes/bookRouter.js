@@ -5,6 +5,7 @@ const { body, validationResult, matchedData } = require("express-validator");
 const bookRouter = Router();
 
 const validateBook = [
+  body("id").isInt(),
   body("title")
     .trim()
     .isLength({ min: 1, max: 255 })
@@ -23,7 +24,7 @@ bookRouter.get("/:bookId", async (req, res) => {
 
   const author = await db.getAuthorsForIds([book.author_id]);
 
-  book.author = author[0].name;
+  book.author = author[0] ? author[0].name : null;
 
   const allGenres = await db.getAllCategories();
 
@@ -39,22 +40,44 @@ bookRouter.get("/:bookId", async (req, res) => {
 bookRouter.post("/:bookId", [
   validateBook,
   async (req, res) => {
+    const formData = matchedData(req);
     const allGenres = await db.getAllCategories();
 
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).render("bookForm", {
         formUrl: req.baseUrl + req.url,
-        bookData: matchedData(req),
+        bookData: formData,
         genres: allGenres,
         errors: errors.array(),
       });
     }
 
-    console.log(req.body);
+    formData.genre_id = allGenres.find(
+      (genre) => genre.name === formData.genre
+    ).id;
 
-    //TODO: redirect to / instead
-    res.send("Book updated!");
+    const author = await db.getAuthorForName(formData.author);
+    if (author[0]) {
+      formData.author_id = author[0].id;
+    } else {
+      const createdAuthor = await db.createAuthor(formData.author);
+      if (createdAuthor) {
+        formData.author_id = createdAuthor.id;
+      } else {
+        return res.status(500).render("bookForm", {
+          formUrl: req.baseUrl + req.url,
+          bookData: formData,
+          genres: allGenres,
+          errors: ["Server error: could not register new author"],
+        });
+      }
+    }
+
+    await db.updateItem(formData);
+
+    res.redirect("/");
   },
 ]);
 

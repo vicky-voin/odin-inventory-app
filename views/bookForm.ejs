@@ -7,6 +7,7 @@
     <div class="m-auto mt-12 max-w-xl">
       <form class="flex flex-col gap-4" action="<%= formUrl%>" method="POST">
         <h1 class="text-2xl">Book Information</h1>
+        <input type="hidden" id="id" name="id" value="<%= bookData.id %>" />
         <label for="title">Title: </label>
         <input
           class="p-2 border border-sky-500 rounded-sm"

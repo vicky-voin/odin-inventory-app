@@ -1,42 +1,56 @@
 const { Router } = require("express");
 const db = require("../db/queries");
+const { query, validationResult } = require("express-validator");
 
 const homeRouter = Router();
 
-homeRouter.get("/", async (req, res) => {
-  const query = req.query;
-  const targetGenre = query["genre"];
+homeRouter.get(
+  "/",
+  query("genre").optional().isInt().escape(),
+  async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty() && req.query) {
+      return res.redirect("/");
+    }
 
-  const items =
-    targetGenre == null
-      ? await db.getAllItems()
-      : await db.getItemsForCategory(targetGenre);
+    const targetGenre = req.query.genre;
 
-  let categories = await db.getAllCategories();
-  categories = categories.map((category) => ({
-    ...category,
-    link: "/?genre=" + category.id,
-  }));
+    const items =
+      targetGenre == null
+        ? await db.getAllItems()
+        : await db.getItemsForCategory(targetGenre);
 
-  categories.unshift({ name: "All", link: "/" });
+    let categories = await db.getAllCategories();
+    categories = categories.map((category) => ({
+      ...category,
+      link: "/?genre=" + category.id,
+    }));
 
-  const selectedCategory = categories.find(
-    (category) => category.id == targetGenre
-  ).name;
+    categories.unshift({ name: "All", link: "/" });
 
-  const authors = await db.getAuthorsForIds(
-    items.map((item) => item.author_id)
-  );
+    const selectedCategory = categories.find(
+      (category) => category.id == targetGenre
+    ).name;
 
-  res.render("home", {
-    items: items.map((item) => ({
-      ...item,
-      author: authors.find((author) => author.id === item.author_id).name,
-      link: "/book/" + item.id,
-    })),
-    categories: categories,
-    selectedCategory: selectedCategory,
-  });
-});
+    const authors = await db.getAuthorsForIds(
+      items.map((item) => item.author_id)
+    );
+
+    res.render("home", {
+      items: items.map((item) => {
+        const authorResult = authors.find(
+          (author) => author.id === item.author_id
+        );
+        return {
+          ...item,
+          author: authorResult ? authorResult.name : null,
+          link: "/book/" + item.id,
+        };
+      }),
+      categories: categories,
+      selectedCategory: selectedCategory,
+    });
+  }
+);
 
 module.exports = homeRouter;
