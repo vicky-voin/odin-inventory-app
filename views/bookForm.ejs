@@ -21,6 +21,17 @@
           id="author"
           value="<%= bookData.author %>"
         />
+        <label for="genre">Genre: </label>
+        <input
+          list="genre"
+          class="p-2 border border-sky-500 rounded-sm"
+          value="<%= bookData.genre %>"
+        />
+        <datalist id="genre">
+          <% genres.forEach((genre) => { %>
+          <option value="<%= genre.name %>"><%= genre.name %></option>
+          <% }) %>
+        </datalist>
         <button
           class="text-center text-white bg-sky-500 p-2 rounded-sm hover:bg-sky-600"
           type="submit"

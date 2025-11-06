@@ -57,7 +57,7 @@ client.query("BEGIN", (err) => {
                 "George Orwell",
                 "Isaac Asimov",
                 "Agatha Christie",
-                "Fyodor Dostoevsky",
+                "Brandon Sanderson",
                 "Brené Brown",
               ];
               const insertAuthor = "INSERT INTO authors (name) VALUES ($1)";
@@ -70,17 +70,15 @@ client.query("BEGIN", (err) => {
               const insertBook =
                 "INSERT INTO books (title, genre_id, author_id) VALUES ($1, $2, $3)";
               const books = [
-                ["1984", 1, 1],
-                ["Animal Farm", 1, 1],
+                ["1984", 2, 1],
+                ["Animal Farm", 2, 1],
                 ["Foundation", 2, 2],
-                ["Crime and Punishment", 3, 4],
-                ["The Brothers Karamazov", 4, 4],
+                ["Mistborn", 3, 4],
+                ["The Way of Kings", 3, 4],
                 ["Dare to Lead", 1, 5],
-                ["The Gifts of Imperfection", 2, 5],
+                ["The Gifts of Imperfection", 1, 5],
                 ["I, Robot", 2, 2],
-                ["The Idiot", 3, 4],
-                ["Demons", 4, 4],
-                ["Murder on the Orient Express", 3, 3],
+                ["Murder on the Orient Express", 4, 3],
               ];
 
               books.forEach(([title, genreId, authorId]) => {

@@ -12,7 +12,15 @@ bookRouter.get("/:bookId", async (req, res) => {
 
   book.author = author[0].name;
 
-  res.render("bookForm", { formUrl: req.baseUrl + req.url, bookData: book });
+  const allGenres = await db.getAllCategories();
+
+  book.genre = allGenres.find((genre) => genre.id === book.genre_id).name;
+
+  res.render("bookForm", {
+    formUrl: req.baseUrl + req.url,
+    bookData: book,
+    genres: allGenres,
+  });
 });
 
 bookRouter.post("/:bookId", async (req, res) => {
