@@ -21,6 +21,7 @@
     --container-2xs: 18rem;
     --container-xs: 20rem;
     --container-xl: 36rem;
+    --container-3xl: 48rem;
     --text-sm: 0.875rem;
     --text-sm--line-height: calc(1.25 / 0.875);
     --text-base: 1rem;
@@ -198,6 +199,15 @@
   .mt-12 {
     margin-top: calc(var(--spacing) * 12);
   }
+  .mt-24 {
+    margin-top: calc(var(--spacing) * 24);
+  }
+  .mb-6 {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+  .mb-12 {
+    margin-bottom: calc(var(--spacing) * 12);
+  }
   .flex {
     display: flex;
   }
@@ -219,6 +229,9 @@
   .max-w-3\/4 {
     max-width: calc(3/4 * 100%);
   }
+  .max-w-3xl {
+    max-width: var(--container-3xl);
+  }
   .max-w-700 {
     max-width: calc(var(--spacing) * 700);
   }
@@ -231,8 +244,14 @@
   .min-w-2xs {
     min-width: var(--container-2xs);
   }
+  .min-w-3xl {
+    min-width: var(--container-3xl);
+  }
   .min-w-3xs {
     min-width: var(--container-3xs);
+  }
+  .min-w-screen {
+    min-width: 100vw;
   }
   .min-w-xs {
     min-width: var(--container-xs);
@@ -260,6 +279,9 @@
   }
   .flex-wrap {
     flex-wrap: wrap;
+  }
+  .justify-center {
+    justify-content: center;
   }
   .gap-4 {
     gap: calc(var(--spacing) * 4);

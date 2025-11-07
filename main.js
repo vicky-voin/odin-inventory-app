@@ -19,6 +19,11 @@ app.use("/book", bookRouter);
 app.use("/genre", genreRouter);
 app.use("/", homeRouter);
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("errorPage");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (error) => {
   if (error) {
