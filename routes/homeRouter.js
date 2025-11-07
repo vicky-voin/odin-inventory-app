@@ -49,6 +49,7 @@ homeRouter.get(
       }),
       categories: categories,
       selectedCategory: selectedCategory,
+      addBookUrl: "/book/new",
     });
   }
 );

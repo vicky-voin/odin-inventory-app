@@ -17,6 +17,67 @@ const validateBook = [
   body("genre").trim(),
 ];
 
+bookRouter.get("/new", async (req, res) => {
+  const allGenres = await db.getAllCategories();
+
+  res.render("bookForm", {
+    postUrl: req.baseUrl + req.url,
+    deleteUrl: "",
+    submitButtonText: "Add",
+    bookData: {
+      id: -1,
+      title: "",
+      author: "",
+    },
+    genres: allGenres,
+  });
+});
+
+bookRouter.post("/new", validateBook, async (req, res) => {
+  const formData = matchedData(req);
+  const allGenres = await db.getAllCategories();
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).render("bookForm", {
+      postUrl: req.baseUrl + req.url,
+      deleteUrl: "",
+      submitButtonText: "Add",
+      bookData: formData,
+      genres: allGenres,
+      errors: errors.array(),
+    });
+  }
+
+  formData.genre_id = allGenres.find(
+    (genre) => genre.name === formData.genre
+  ).id;
+
+  const author = await db.getAuthorForName(formData.author);
+  if (author[0]) {
+    formData.author_id = author[0].id;
+  } else {
+    const createdAuthor = await db.createAuthor(formData.author);
+    if (createdAuthor) {
+      formData.author_id = createdAuthor.id;
+    } else {
+      return res.status(500).render("bookForm", {
+        postUrl: req.baseUrl + req.url,
+        deleteUrl: "",
+        submitButtonText: "Add",
+        bookData: formData,
+        genres: allGenres,
+        errors: ["Server error: could not register new author"],
+      });
+    }
+  }
+
+  await db.addItem(formData);
+
+  res.redirect("/");
+});
+
 bookRouter.get("/:bookId", async (req, res) => {
   const { bookId } = req.params;
 
@@ -31,11 +92,30 @@ bookRouter.get("/:bookId", async (req, res) => {
   book.genre = allGenres.find((genre) => genre.id === book.genre_id).name;
 
   res.render("bookForm", {
-    formUrl: req.baseUrl + req.url,
+    postUrl: req.baseUrl + req.url,
+    deleteUrl: `${req.baseUrl}/delete${req.url}`,
     bookData: book,
     genres: allGenres,
   });
 });
+
+bookRouter.post(
+  "/delete/:bookId",
+  [body("id").isInt().isLength({ min: 1 })],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).render("errorPage");
+    }
+
+    const formData = matchedData(req);
+
+    await db.deleteItemWithId(formData.id);
+
+    res.redirect("/");
+  }
+);
 
 bookRouter.post("/:bookId", [
   validateBook,
