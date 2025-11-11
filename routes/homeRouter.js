@@ -24,6 +24,7 @@ homeRouter.get(
     categories = categories.map((category) => ({
       ...category,
       link: "/?genre=" + category.id,
+      editLink: "/genre/" + category.id,
     }));
 
     categories.unshift({ name: "All", link: "/" });
@@ -48,6 +49,7 @@ homeRouter.get(
         };
       }),
       categories: categories,
+      addNewUrl: "/genre/new",
       selectedCategory: selectedCategory,
       addBookUrl: "/book/new",
     });

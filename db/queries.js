@@ -40,6 +40,11 @@ async function addItem(data) {
   return result;
 }
 
+async function getCategoryWithId(id) {
+  const { rows } = await pool.query(`SELECT * FROM genres WHERE id = $1`, [id]);
+  return rows;
+}
+
 async function getAllCategories() {
   const { rows } = await pool.query("SELECT * FROM genres");
   return rows;
@@ -86,6 +91,7 @@ module.exports = {
   updateItem,
   addItem,
   getAllCategories,
+  getCategoryWithId,
   getAuthorsForIds,
   getAuthorForName,
   createAuthor,

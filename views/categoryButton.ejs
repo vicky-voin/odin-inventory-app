@@ -1,6 +1,16 @@
-<a
-  class="text-center m-6 text-white bg-sky-500 p-2 rounded-sm hover:bg-sky-600"
-  href="<%= category.link %>"
->
-  <%= category.name %>
-</a>
+<div class="flex gap-2">
+  <a
+    class="grow-1 text-center text-white bg-gray-500 p-2 rounded-sm hover:bg-sky-600"
+    href="<%= category.link %>"
+  >
+    <%= category.name %>
+  </a>
+  <% if(category.link !== "/") { %>
+  <a
+    class="grow-0 text-center text-white bg-gray-500 p-2 rounded-sm hover:bg-sky-600"
+    href="<%= category.editLink %>"
+  >
+    Edit
+  </a>
+  <% } %>
+</div>
