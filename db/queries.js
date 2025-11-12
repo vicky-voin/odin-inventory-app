@@ -45,6 +45,13 @@ async function getCategoryWithId(id) {
   return rows;
 }
 
+async function getCategoryWithName(name) {
+  const { rows } = await pool.query(`SELECT * FROM genres WHERE name = $1`, [
+    name,
+  ]);
+  return rows;
+}
+
 async function getAllCategories() {
   const { rows } = await pool.query("SELECT * FROM genres");
   return rows;
@@ -55,6 +62,17 @@ async function getItemsForCategory(category) {
     category,
   ]);
   return rows;
+}
+
+async function addCategory(data) {
+  const result = await pool.query(
+    `INSERT INTO genres (name) VALUES ($1) RETURNING *;`,
+    [data.name]
+  );
+
+  console.log(`Added category with id: ${result.rows[0].id}`);
+
+  return result;
 }
 
 async function getAuthorsForIds(ids) {
@@ -92,6 +110,8 @@ module.exports = {
   addItem,
   getAllCategories,
   getCategoryWithId,
+  getCategoryWithName,
+  addCategory,
   getAuthorsForIds,
   getAuthorForName,
   createAuthor,
