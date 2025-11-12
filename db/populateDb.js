@@ -1,13 +1,19 @@
 require("dotenv").config();
 const { Client } = require("pg");
 
-const client = new Client({
-  user: process.env.DB_USER,
-  host: process.argv.includes("DEV") ? "localhost" : process.argv[1],
-  database: "odin_inventory",
-  password: process.env.DB_PW,
-  port: 5432,
-});
+const client = new Client(
+  process.argv.includes("DEV")
+    ? {
+        user: process.env.DB_USER,
+        host: "localhost",
+        database: "odin_inventory",
+        password: process.env.DB_PW,
+        port: 5432,
+      }
+    : {
+        connectionString: process.env.DB_URL,
+      }
+);
 
 client.connect();
 
