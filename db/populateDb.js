@@ -32,10 +32,10 @@ client.query("BEGIN", (err) => {
 
           client.query(
             `CREATE TABLE IF NOT EXISTS books (
-                id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-                title TEXT NOT NULL,
-                genre_id INTEGER REFERENCES genres(id),
-                author_id INTEGER REFERENCES authors(id)
+              id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+              title TEXT NOT NULL,
+              genre_id INTEGER REFERENCES genres(id) ON DELETE SET NULL,
+              author_id INTEGER REFERENCES authors(id)
             )`,
             (err) => {
               if (err) throw err;

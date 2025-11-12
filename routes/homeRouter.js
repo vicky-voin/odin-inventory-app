@@ -27,11 +27,17 @@ homeRouter.get(
       editLink: "/genre/" + category.id,
     }));
 
-    categories.unshift({ name: "All", link: "/" });
+    categories.unshift({
+      name: "Uncategorized",
+      link: "/?genre=-1",
+      editLink: "",
+    });
+    categories.unshift({ name: "All", link: "/", editLink: "" });
 
-    const selectedCategory = categories.find(
-      (category) => category.id == targetGenre
-    ).name;
+    const selectedCategory =
+      targetGenre === "-1"
+        ? "Uncategorized"
+        : categories.find((category) => category.id == targetGenre).name;
 
     const authors = await db.getAuthorsForIds(
       items.map((item) => item.author_id)

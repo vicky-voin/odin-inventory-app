@@ -5,7 +5,7 @@
   >
     <%= category.name %>
   </a>
-  <% if(category.link !== "/") { %>
+  <% if(category.editLink !== "") { %>
   <a
     class="grow-0 text-center text-white bg-gray-500 p-2 rounded-sm hover:bg-sky-600"
     href="<%= category.editLink %>"

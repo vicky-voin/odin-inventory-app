@@ -21,7 +21,12 @@ async function deleteItemWithId(id) {
 async function updateItem(data) {
   const result = await pool.query(
     `UPDATE books SET title = $1, author_id = $2, genre_id = $3 WHERE id = $4;`,
-    [data.title, data.author_id, data.genre_id, data.id]
+    [
+      data.title,
+      data.author_id,
+      data.genre_id === -1 ? null : data.genre_id,
+      data.id,
+    ]
   );
 
   console.log(`Updated item with id: ${data.id}`);
@@ -58,9 +63,16 @@ async function getAllCategories() {
 }
 
 async function getItemsForCategory(category) {
-  const { rows } = await pool.query(`SELECT * FROM books WHERE genre_id = $1`, [
-    category,
-  ]);
+  let query, params;
+  if (category === "-1") {
+    query = "SELECT * FROM books WHERE genre_id IS NULL";
+    params = [];
+  } else {
+    query = "SELECT * FROM books WHERE genre_id = $1";
+    params = [category];
+  }
+
+  const { rows } = await pool.query(query, params);
   return rows;
 }
 
@@ -73,6 +85,32 @@ async function addCategory(data) {
   console.log(`Added category with id: ${result.rows[0].id}`);
 
   return result;
+}
+
+async function updateCategory(data) {
+  const result = await pool.query(
+    `UPDATE genres SET name = $1 WHERE id = $2;`,
+    [data.name, data.id]
+  );
+
+  console.log(`Updated category with id: ${data.id}`);
+
+  return result;
+}
+
+async function deleteCategoryWithId(id) {
+  await removeGenreReferences(id);
+
+  const result = await pool.query(`DELETE FROM genres WHERE id = $1;`, [id]);
+
+  console.log(`Deleted category with id: ${id}`);
+
+  return result;
+}
+
+async function removeGenreReferences(genreId) {
+  const query = "UPDATE books SET genre_id = NULL WHERE genre_id = $1";
+  await pool.query(query, [genreId]);
 }
 
 async function getAuthorsForIds(ids) {
@@ -112,6 +150,8 @@ module.exports = {
   getCategoryWithId,
   getCategoryWithName,
   addCategory,
+  updateCategory,
+  deleteCategoryWithId,
   getAuthorsForIds,
   getAuthorForName,
   createAuthor,

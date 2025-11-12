@@ -41,6 +41,8 @@
           list="genre"
           name="genre"
           value="<%= bookData.genre %>"
+          oninput="this.setCustomValidity(this.value && !Array.from(this.list.options).some(option => option.value === this.value) ? 'Please select a valid genre from the list.' : '');"
+          required
         />
         <datalist id="genre">
           <% genres.forEach((genre) => { %>

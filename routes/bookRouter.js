@@ -89,7 +89,8 @@ bookRouter.get("/:bookId", async (req, res) => {
 
   const allGenres = await db.getAllCategories();
 
-  book.genre = allGenres.find((genre) => genre.id === book.genre_id).name;
+  book.genre =
+    allGenres.find((genre) => genre.id === book.genre_id)?.name || "";
 
   res.render("bookForm", {
     postUrl: req.baseUrl + req.url,
@@ -134,9 +135,8 @@ bookRouter.post("/:bookId", [
       });
     }
 
-    formData.genre_id = allGenres.find(
-      (genre) => genre.name === formData.genre
-    ).id;
+    formData.genre_id =
+      allGenres.find((genre) => genre.name === formData.genre)?.id || -1;
 
     const author = await db.getAuthorForName(formData.author);
     if (author[0]) {

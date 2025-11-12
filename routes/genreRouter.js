@@ -67,4 +67,41 @@ genreRouter.get("/:genreId", async (req, res) => {
   });
 });
 
+genreRouter.post("/:genreId", validateGenre, async (req, res) => {
+  const formData = matchedData(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).render("genreForm", {
+      postUrl: req.baseUrl + req.url,
+      deleteUrl: `${req.baseUrl}/delete${req.url}`,
+      genreData: formData,
+      errors: errors.array(),
+    });
+  }
+
+  await db.updateCategory(formData);
+
+  res.redirect("/");
+});
+
+genreRouter.post(
+  "/delete/:genreId",
+  [body("id").isInt().isLength({ min: 1 })],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).render("errorPage");
+    }
+
+    const formData = matchedData(req);
+
+    await db.deleteCategoryWithId(formData.id);
+
+    res.redirect("/");
+  }
+);
+
 module.exports = genreRouter;
